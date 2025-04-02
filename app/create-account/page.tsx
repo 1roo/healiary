@@ -32,6 +32,8 @@ export default function CreateAccountPage() {
     const data = await res.json();
     if (data.exists) {
       setEmailError("이미 가입된 이메일입니다.");
+    } else {
+      setEmailError(""); // ✅ 중복 아님 -> 에러 제거
     }
   }, 500);
 
@@ -39,16 +41,25 @@ export default function CreateAccountPage() {
     const value = e.target.value;
     setEmail(value);
 
-    const result = baseSchema.shape.email.safeParse(value);
-    console.log("result: ", result);
+    if (value === "") {
+      setEmailError("");
+      return;
+    }
 
+    const result = baseSchema.shape.email.safeParse(value);
     setEmailError(result.success ? "" : result.error.errors[0].message);
+
     if (result.success) checkEmailExists(value);
   };
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setNickname(value);
+
+    if (value === "") {
+      setNicknameError("");
+      return;
+    }
 
     const result = baseSchema.shape.nickname.safeParse(value);
     setNicknameError(result.success ? "" : result.error.errors[0].message);
@@ -57,6 +68,12 @@ export default function CreateAccountPage() {
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setPassword(value);
+
+    if (value === "") {
+      setPasswordError("");
+      setConfirmPasswordError("");
+      return;
+    }
 
     const result = baseSchema.shape.password.safeParse(value);
     setPasswordError(result.success ? "" : result.error.errors[0].message);
@@ -74,6 +91,11 @@ export default function CreateAccountPage() {
     const value = e.target.value;
     setConfirmPassword(value);
 
+    if (value === "") {
+      setConfirmPasswordError("");
+      return;
+    }
+
     if (password !== value) {
       setConfirmPasswordError("비밀번호가 일치하지 않습니다.");
     } else {
@@ -82,6 +104,12 @@ export default function CreateAccountPage() {
   };
 
   const handleSubmit = async () => {
+    // ✅ 에러 초기화
+    setEmailError("");
+    setNicknameError("");
+    setPasswordError("");
+    setConfirmPasswordError("");
+
     const result = await handleRegister({
       email,
       nickname,
@@ -106,10 +134,8 @@ export default function CreateAccountPage() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-4 flex flex-col items-center gap-10 overflow-y-hidden">
-      <p className="mt-20 mb-10 font-semibold text-2xl text-[#CE9090]">
-        회원가입
-      </p>
+    <div className="w-full max-w-md mx-auto p-4 flex flex-col items-center gap-4 ">
+      <p className="mt-8 font-semibold text-2xl text-[#CE9090]">회원가입</p>
 
       <FormInput
         label="이메일"
@@ -150,7 +176,7 @@ export default function CreateAccountPage() {
         error={confirmPasswordError}
       />
 
-      <Button onClick={handleSubmit} className="w-2/3 mt-12">
+      <Button onClick={handleSubmit} className="w-2/3 mt-2">
         가입하기
       </Button>
     </div>

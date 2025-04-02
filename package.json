@@ -19,6 +19,7 @@
     "prisma": "^6.5.0",
     "react": "^18",
     "react-dom": "^18",
+    "tailwind-scrollbar-hide": "^2.0.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {

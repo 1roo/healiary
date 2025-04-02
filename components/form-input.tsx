@@ -26,7 +26,7 @@ export default function FormInput({
 }: IFormInputProps) {
   return (
     <div className="w-full">
-      <label htmlFor={name} className="block text-lg font-medium text-gray-400">
+      <label htmlFor={name} className="block text-md font-medium text-gray-400">
         {label}
       </label>
       <input
@@ -38,12 +38,12 @@ export default function FormInput({
         required={required}
         placeholder={placeholder}
         className={cn(
-          "w-full h-14 px-4 py-2 border rounded-lg outline-none bg-slate-50 focus:ring-1 focus:ring-gray-500 transition",
+          "w-full h-10 px-4 py-2 border rounded-lg outline-none bg-slate-50 focus:ring-1 focus:ring-gray-500 transition",
           className,
           error && "border-red-500"
         )}
       />
-      {error && <span className="text-sm text-red-500">{error}</span>}
+      {error && <span className="text-xs text-red-500">{error}</span>}
     </div>
   );
 }

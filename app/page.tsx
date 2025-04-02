@@ -34,7 +34,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-col justify-center items-center overflow-x-hidden">
-      <div className="relative w-[430px] h-[430px] mt-20 ">
+      <div className="relative w-[320px] h-[180px] mt-20 ">
         <Image
           src="/sky.png"
           alt="배너 이미지"
@@ -44,12 +44,12 @@ export default function LoginPage() {
         <Image
           src="/healiary.png"
           alt="로고"
-          width={200}
-          height={200}
+          width={150}
+          height={150}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         />
       </div>
-      <div className="w-2/3 mt-8 flex flex-col items-center justify-center ">
+      <div className="w-2/3 mt-4 flex flex-col items-center justify-center ">
         <Input
           type="email"
           placeholder="이메일"
@@ -64,10 +64,10 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
           onKeyDown={handleKeyDown}
         />
-        <Button className="mt-5" onClick={handleLogin}>
+        <Button className="mt-3" onClick={handleLogin}>
           로그인
         </Button>
-        <p className="my-8">OR</p>
+        <p className="my-5">OR</p>
         <Button
           className="w-full"
           onClick={() => router.push("/create-account")}>

@@ -21,8 +21,8 @@ export default function RootLayout({
         />
       </head>
       <body className="flex items-center justify-center min-h-screen bg-neutral-100">
-        <div className="relative w-[430px] h-[932px] bg-background border border-gray-300 rounded-[33px] overflow-hidden shadow-xl flex flex-col">
-          <main className="flex-grow overflow-y-auto">{children}</main>
+        <div className="relative w-80 h-[554px] max-h-[554px] bg-background border border-gray-300 rounded-[33px] overflow-hidden shadow-xl flex flex-col">
+          <main className="flex-grow overflow-y-auto scrollbar-hide">{children}</main>
           <NavbarWrapper />
         </div>
       </body>
