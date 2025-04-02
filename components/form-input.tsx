@@ -1,7 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 
-type FormInputProps = {
+interface IFormInputProps {
   label: string;
   name: string;
   type?: string;
@@ -11,7 +11,7 @@ type FormInputProps = {
   placeholder?: string;
   required?: boolean;
   className?: string;
-};
+}
 
 export default function FormInput({
   label,
@@ -23,7 +23,7 @@ export default function FormInput({
   placeholder,
   required = false,
   className,
-}: FormInputProps) {
+}: IFormInputProps) {
   return (
     <div className="w-full">
       <label htmlFor={name} className="block text-lg font-medium text-gray-400">
@@ -38,7 +38,7 @@ export default function FormInput({
         required={required}
         placeholder={placeholder}
         className={cn(
-          "w-full px-4 py-2 border rounded-lg outline-none bg-slate-50 focus:ring-1 focus:ring-gray-500 transition",
+          "w-full h-14 px-4 py-2 border rounded-lg outline-none bg-slate-50 focus:ring-1 focus:ring-gray-500 transition",
           className,
           error && "border-red-500"
         )}

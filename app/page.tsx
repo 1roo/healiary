@@ -7,18 +7,13 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
-export default function HomePage() {
+export default function LoginPage() {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      alert("이메일과 비밀번호를 입력해주세요.");
-      return;
-    }
-
     const res = await signIn("credentials", {
       email,
       password,
@@ -26,10 +21,10 @@ export default function HomePage() {
     });
 
     if (res?.ok) {
-      alert("🎉 로그인 성공!");
+      console.log("로그인 성공");
       router.push("/home");
     } else {
-      alert("❌ 로그인 실패. 이메일 또는 비밀번호를 확인하세요.");
+      alert("❌ 로그인 실패.");
     }
   };
 

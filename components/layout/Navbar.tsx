@@ -6,7 +6,7 @@ import { Home, BookOpen, Star, User } from "lucide-react";
 
 const navItems = [
   { href: "/home", label: "홈", icon: Home },
-  { href: "/diary", label: "기록", icon: BookOpen },
+  { href: "/diary/write", label: "일기쓰기", icon: BookOpen },
   { href: "/favorites", label: "즐겨찾기", icon: Star },
   { href: "/mypage", label: "마이페이지", icon: User },
 ];

@@ -107,7 +107,7 @@ export default function CreateAccountPage() {
 
   return (
     <div className="w-full max-w-md mx-auto p-4 flex flex-col items-center gap-10 overflow-y-hidden">
-      <p className="mt-20 mb-20 font-semibold text-2xl text-[#CE9090]">
+      <p className="mt-20 mb-10 font-semibold text-2xl text-[#CE9090]">
         회원가입
       </p>
 
@@ -150,7 +150,7 @@ export default function CreateAccountPage() {
         error={confirmPasswordError}
       />
 
-      <Button onClick={handleSubmit} className="w-2/3 mt-16">
+      <Button onClick={handleSubmit} className="w-2/3 mt-12">
         가입하기
       </Button>
     </div>
