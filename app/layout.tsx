@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
+import NavbarWrapper from "@/components/layout/NavbarWrapper";
 
 export const metadata: Metadata = {
   title: "Healiary",
@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className="flex items-center justify-center min-h-screen bg-neutral-100">
         <div className="relative w-[430px] h-[932px] bg-background border border-gray-300 rounded-[33px] overflow-hidden shadow-xl flex flex-col">
           <main className="flex-grow overflow-y-auto">{children}</main>
-          <Navbar />
+          <NavbarWrapper />
         </div>
       </body>
     </html>

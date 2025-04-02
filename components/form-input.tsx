@@ -26,7 +26,7 @@ export default function FormInput({
 }: FormInputProps) {
   return (
     <div className="w-full">
-      <label htmlFor={name} className="block text-sm font-medium text-gray-400">
+      <label htmlFor={name} className="block text-lg font-medium text-gray-400">
         {label}
       </label>
       <input

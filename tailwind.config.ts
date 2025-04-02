@@ -14,7 +14,7 @@ const config: Config = {
         foreground: "var(--foreground)",
       },
       fontFamily: {
-        sans: ["Pretendard", "ui-sans-serif", "system-ui"],
+        sans: ["GowunDodum-Regular", "sans-serif"],
       },
     },
   },

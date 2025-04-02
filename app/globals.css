@@ -5,7 +5,13 @@
 /* ----------------------------
    1. Pretendard 웹폰트 불러오기
 ----------------------------- */
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+@font-face {
+  font-family: "GowunDodum-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/GowunDodum-Regular.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
 
 /* ----------------------------
    2. CSS Reset
@@ -21,10 +27,7 @@
 html,
 body {
   height: 100%;
-  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
-    Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: "GowunDodum-Regular", sans-serif;
   line-height: 1.6;
   background-color: #fff;
   color: #111;
