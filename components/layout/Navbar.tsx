@@ -15,7 +15,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="w-full h-16 border-t border-gray-200 bg-white flex justify-around items-center z-50">
+    <nav className="w-full h-16 border-t border-gray-200 bg-white flex justify-around items-center z-1">
       {navItems.map(({ href, label, icon: Icon }) => {
         const isActive = pathname === href;
 

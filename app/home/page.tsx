@@ -2,16 +2,39 @@
 
 import HomeBox from "@/components/home-box";
 import Image from "next/image";
-import { Heart } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import HeartButton from "@/components/HeartButton";
+
+type Quote = {
+  id: number;
+  content: string;
+  emotionTag: string;
+};
 
 export default function HomePage() {
   const { data: session } = useSession();
-  console.log(session?.user.nickname);
+  const [quote, setQuote] = useState<Quote | null>(null);
+
+  useEffect(() => {
+    const fetchQuote = async () => {
+      try {
+        const res = await fetch("/api/quote/recommend");
+        const data = await res.json();
+        if (res.ok) {
+          setQuote(data.quote);
+        }
+      } catch (err) {
+        console.error("명언 불러오기 실패", err);
+      }
+    };
+
+    fetchQuote();
+  }, []);
 
   return (
     <div className="mt-10 flex flex-col items-center w-full">
-      <Image src="/healiary.png" alt="로고" width={130} height={200} />
+      <Image src="/healiary.png" alt="로고" width={100} height={100} />
       <p className="my-4 text-sm text-gray-600">
         <span className="font-semibold"></span>
         {session?.user.nickname}님, 오늘도 내일도 항상 응원합니다.
@@ -21,8 +44,8 @@ export default function HomePage() {
         {/* 오늘의 한 마디 */}
         <HomeBox title="오늘의 한 마디">
           <div className="flex items-center justify-between">
-            <p className="text-[13px]">너 자신을 믿어. 오늘도 충분히 빛나!</p>
-            <Heart size={18} className="text-gray-400" />
+            <p className="text-[13px]">{quote?.content ?? "명언을 불러오는 중..."}</p>
+            {quote && <HeartButton quoteId={quote.id} />}
           </div>
         </HomeBox>
 
