@@ -3,10 +3,13 @@ import { useState } from "react";
 import Input from "@/components/input";
 import Button from "@/components/button";
 import { useSession } from "next-auth/react";
+import MoodColorModal from "@/components/MoodColorModal";
 
 export default function DiaryWritePage() {
+  const { data: session } = useSession();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const maxLength = 800;
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -21,12 +24,32 @@ export default function DiaryWritePage() {
       return;
     }
 
-    // 모달 띄우기 or API 호출 예정
-    console.log({ title, content });
+    setShowModal(true); // 모달 열기
   };
 
-  const { data: session } = useSession();
-  console.log(session?.user.nickname);
+  const handleSubmitWithMood = async (moodColor: string) => {
+    setShowModal(false);
+
+    const res = await fetch("/api/diary", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        content,
+        moodColor,
+      }),
+    });
+
+    if (res.ok) {
+      alert("일기가 저장되었습니다!");
+      setTitle("");
+      setContent("");
+    } else {
+      alert("저장 실패");
+    }
+  };
 
   return (
     <div className="p-6 space-y-4">
@@ -37,7 +60,7 @@ export default function DiaryWritePage() {
         오늘 {session?.user.nickname}님의 하루는 어땠나요?
       </p>
       <Input
-        placeholder="제목 (선택)"
+        placeholder="제목"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
@@ -55,6 +78,12 @@ export default function DiaryWritePage() {
       </div>
 
       <Button onClick={handleSave}>저장</Button>
+
+      <MoodColorModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSubmit={handleSubmitWithMood}
+      />
     </div>
   );
 }
