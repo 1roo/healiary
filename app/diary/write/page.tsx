@@ -4,8 +4,10 @@ import Input from "@/components/input";
 import Button from "@/components/button";
 import { useSession } from "next-auth/react";
 import MoodColorModal from "@/components/MoodColorModal";
+import { useRouter } from "next/navigation";
 
 export default function DiaryWritePage() {
+  const router = useRouter();
   const { data: session } = useSession();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -46,6 +48,7 @@ export default function DiaryWritePage() {
       alert("일기가 저장되었습니다!");
       setTitle("");
       setContent("");
+      router.push("/home");
     } else {
       alert("저장 실패");
     }
