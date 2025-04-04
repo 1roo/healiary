@@ -1,92 +1,104 @@
 "use client";
-import { useState } from "react";
-import Input from "@/components/input";
-import Button from "@/components/button";
-import { useSession } from "next-auth/react";
-import MoodColorModal from "@/components/MoodColorModal";
-import { useRouter } from "next/navigation";
 
-export default function DiaryWritePage() {
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { Diary } from "@/app/home/page";
+import {
+  getHueColorName,
+  getToneDescription,
+} from "@/utils/generateMoodDescription";
+import { ChevronLeft } from "lucide-react";
+
+const formatKoreanDate = (isoDate: Date) => {
+  const date = new Date(isoDate);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+
+  const days = ["일", "월", "화", "수", "목", "금", "토"];
+  const weekday = days[date.getDay()];
+
+  let hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12;
+
+  return `${year}년 ${month}월 ${day}일 (${weekday}) ${hours}:${minutes}${ampm}`;
+};
+
+const DiaryPage = () => {
+  const { id } = useParams();
   const router = useRouter();
-  const { data: session } = useSession();
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const maxLength = 800;
 
-  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (e.target.value.length <= maxLength) {
-      setContent(e.target.value);
+  console.log("다이어리페이지의 아이디!!!::", id);
+
+  const [diary, setDiary] = useState<Diary | null>(null);
+
+  useEffect(() => {
+    if (id) {
+      fetch(`/api/diary/${id}`)
+        .then((res) => {
+          console.log("Response status:", res.status); // 응답 상태 코드 확인
+          return res.json();
+        })
+        .then((data) => {
+          console.log("Received data:", data); // 데이터 확인
+          setDiary(data.diary);
+        })
+        .catch((err) => {
+          console.error("Error fetching diary:", err);
+        });
     }
-  };
+  }, [id]);
 
-  const handleSave = () => {
-    if (!content.trim()) {
-      alert("내용을 입력해주세요.");
-      return;
-    }
-
-    setShowModal(true); // 모달 열기
-  };
-
-  const handleSubmitWithMood = async (moodColor: string) => {
-    setShowModal(false);
-
-    const res = await fetch("/api/diary", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title,
-        content,
-        moodColor,
-      }),
-    });
-
-    if (res.ok) {
-      alert("일기가 저장되었습니다!");
-      setTitle("");
-      setContent("");
-      router.push("/home");
-    } else {
-      alert("저장 실패");
-    }
-  };
+  if (!diary) return <div>Loading...</div>;
 
   return (
-    <div className="p-6 space-y-4">
-      <p className="text-gray-500 -mb-4 text-center">
-        안녕하세요 {session?.user.nickname}님!
-      </p>
-      <p className=" text-gray-500 text-center">
-        오늘 {session?.user.nickname}님의 하루는 어땠나요?
-      </p>
-      <Input
-        placeholder="제목"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
+    <div>
+      <ChevronLeft
+        size={25}
+        strokeWidth={1.5}
+        onClick={() => router.push("/home")}
+        className="mt-5 ml-3 text-gray-400 cursor-pointer transition-transform duration-150 hover:text-gray-600 hover:scale-110"
       />
 
-      <div className="relative w-full">
-        <textarea
-          className="w-full h-64 p-4 bg-slate-50 border rounded-lg resize-none focus:outline-none"
-          placeholder="오늘 어떤 하루였나요?"
-          value={content}
-          onChange={handleContentChange}
-        />
-        <div className="absolute bottom-2 right-4 text-xs text-gray-500">
-          {content.length}/{maxLength}
+      <div className="mt-5 px-5">
+        <div
+          className={
+            "w-full h-10 bg-slate-100 font-light text-sm px-4 py-2 my-1 border rounded-lg  "
+          }>
+          생성일시: {formatKoreanDate(diary.createdAt)}
+        </div>
+        <div
+          className={
+            "flex items-center w-full h-10 bg-slate-100 font-light text-sm px-4 py-2 my-1 border rounded-lg "
+          }>
+          감정색상:
+          <div
+            className="ml-2 w-3 h-3 rounded-full"
+            style={{ backgroundColor: diary.moodColor || "#ccc" }}
+          />
+          <p className="text-sm ml-1 text-gray-600">
+            {getToneDescription(diary.moodSaturation, diary.moodLightness)}
+            {getHueColorName(diary.moodHue)} 빛
+          </p>
+        </div>
+        <div
+          className={
+            "mt-5 mb-3 w-full h-10 bg-slate-50 px-4 py-2 my-1 border rounded-lg"
+          }>
+          {diary.title}
+        </div>
+        <div className="relative w-full">
+          <textarea
+            className="w-full h-64 p-4 bg-slate-50 border rounded-lg resize-none "
+            value={diary.content}
+            disabled
+          />
         </div>
       </div>
-
-      <Button onClick={handleSave}>저장</Button>
-
-      <MoodColorModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        onSubmit={handleSubmitWithMood}
-      />
     </div>
   );
-}
+};
+
+export default DiaryPage;

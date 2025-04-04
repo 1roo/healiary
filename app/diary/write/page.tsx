@@ -26,7 +26,7 @@ export default function DiaryWritePage() {
       return;
     }
 
-    setShowModal(true); // 모달 열기
+    setShowModal(true);
   };
 
   const handleSubmitWithMood = async (moodColor: string) => {

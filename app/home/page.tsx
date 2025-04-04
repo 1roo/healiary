@@ -7,13 +7,14 @@ import { useEffect, useState } from "react";
 import HeartButton from "@/components/HeartButton";
 import { generateMoodDescription } from "@/utils/generateMoodDescription";
 import HomeEmotionSummary from "@/components/HomeEmotionSummary";
+import { useRouter } from "next/navigation";
 
 type Quote = {
   id: number;
   content: string;
   emotionTag: string;
 };
-type Diary = {
+export type Diary = {
   moodColor: string;
   interpretedMood: string;
   moodHue: number;
@@ -22,9 +23,12 @@ type Diary = {
   color: string;
   title: string;
   id: number;
+  content: string;
+  createdAt: Date;
 };
 
 export default function HomePage() {
+  const router = useRouter();
   const { data: session } = useSession();
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [quoteIndex, setQuoteIndex] = useState(0);
@@ -148,7 +152,7 @@ export default function HomePage() {
                 <span
                   className="underline text-[#ce9090] cursor-pointer hover:text-[#d07f7f] hover:font-semibold transition-all"
                   onClick={() => {
-                    window.location.href = `/diary/${latestDiary?.id}`;
+                    router.push(`/diary/${latestDiary?.id}`);
                   }}>
                   [더보기]
                 </span>

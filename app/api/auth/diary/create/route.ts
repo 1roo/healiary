@@ -17,7 +17,7 @@ export async function POST(req: Request) {
   try {
     const diary = await prisma.diary.create({
       data: {
-        userId: parseInt(session.user.id),
+        userId: Number(session.user.id),
         title,
         content,
         moodColor,
