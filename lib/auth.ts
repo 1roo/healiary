@@ -22,7 +22,7 @@ export const authOptions: AuthOptions = {
         if (!isValid) return null;
 
         return {
-          id: String(user.id),
+          id: Number(user.id),
           email: user.email,
           nickname: user.nickname,
         } as unknown as User;
@@ -32,7 +32,7 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async session({ session, token }) {
       if (session.user && token) {
-        session.user.id = token.id as string;
+        session.user.id = token.id as number;
         session.user.email = token.email as string;
         session.user.nickname = token.nickname as string;
       }
@@ -40,7 +40,7 @@ export const authOptions: AuthOptions = {
     },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        token.id = user.id as number;
         token.nickname = user.nickname;
       }
       return token;

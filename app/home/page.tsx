@@ -5,17 +5,39 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import HeartButton from "@/components/HeartButton";
+import { generateMoodDescription } from "@/utils/generateMoodDescription";
 
 type Quote = {
   id: number;
   content: string;
   emotionTag: string;
 };
+type Diary = {
+  moodColor: string;
+  interpretedMood: string;
+  moodHue: number;
+  moodSaturation: number;
+  moodLightness: number;
+};
 
 export default function HomePage() {
   const { data: session } = useSession();
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [quoteIndex, setQuoteIndex] = useState(0);
+
+  const [latestDiary, setLatestDiary] = useState<Diary | null>(null);
+
+  const fetchLatestDiary = async () => {
+    try {
+      const res = await fetch("/api/diary/latest");
+      const data = await res.json();
+      if (res.ok) {
+        setLatestDiary(data.diary);
+      }
+    } catch (err) {
+      console.error("마지막 일기 불러오기 실패", err);
+    }
+  };
 
   const fetchQuotes = async () => {
     try {
@@ -32,6 +54,7 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchQuotes();
+    fetchLatestDiary();
   }, []);
 
   const nextQuote = () => {
@@ -52,22 +75,38 @@ export default function HomePage() {
         <HomeBox
           title="오늘의 한 마디"
           onArrowClick={nextQuote}
-          rightElement={
-            currentQuote && <HeartButton quoteId={currentQuote.id} />
-          }>
-          <div className="flex items-center justify-between">
-            <p className="text-[13px] transition-opacity duration-300 ease-in-out">
-              {currentQuote?.content ?? "명언을 불러오는 중..."}
-            </p>
-          </div>
+          rightElement={<HeartButton quoteId={currentQuote.id} />}>
+          <p>{currentQuote.content}</p>
         </HomeBox>
 
         {/* 마지막 감정 색상 */}
-        <HomeBox title="마지막 감정 색상">
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-pink-400" />
-            <span className="text-[13px]">포근하고 따뜻했던 하루</span>
-          </div>
+        <HomeBox
+          customHeader={
+            <div className="flex justify-between items-center text-sm font-semibold">
+              <span>마지막 감정 색상</span>
+              <div className="flex items-center gap-2">
+                <span
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: latestDiary?.moodColor || "#ccc" }}
+                />
+                <span className="text-[13px]">
+                  {latestDiary?.interpretedMood}
+                </span>
+              </div>
+            </div>
+          }>
+          {latestDiary ? (
+            <p className="text-sm text-gray-600">
+              {generateMoodDescription({
+                hue: latestDiary.moodHue,
+                saturation: latestDiary.moodSaturation,
+                lightness: latestDiary.moodLightness,
+                interpretedMood: latestDiary.interpretedMood,
+              })}
+            </p>
+          ) : (
+            <p className="text-sm text-gray-500">일기를 작성해 주세요!</p>
+          )}
         </HomeBox>
 
         {/* 감정 요약 */}
