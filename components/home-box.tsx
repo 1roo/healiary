@@ -18,7 +18,7 @@ export default function HomeBox({
 }: IHomeBoxProps) {
   return (
     <div
-      className={`w-full my-2 bg-white opacity-80 px-6 py-4 rounded-xl ${className}`}>
+      className={`w-full my-2 bg-white opacity-80 px-6 py-3 rounded-xl ${className}`}>
       {customHeader ? (
         // ✅ 완전 커스터마이징된 헤더 우선
         <div className="mb-2">{customHeader}</div>

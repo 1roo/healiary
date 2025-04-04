@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import HeartButton from "@/components/HeartButton";
 import { generateMoodDescription } from "@/utils/generateMoodDescription";
+import HomeEmotionSummary from "@/components/HomeEmotionSummary";
 
 type Quote = {
   id: number;
@@ -18,6 +19,9 @@ type Diary = {
   moodHue: number;
   moodSaturation: number;
   moodLightness: number;
+  color: string;
+  title: string;
+  id: number;
 };
 
 export default function HomePage() {
@@ -26,7 +30,7 @@ export default function HomePage() {
   const [quoteIndex, setQuoteIndex] = useState(0);
 
   const [latestDiary, setLatestDiary] = useState<Diary | null>(null);
-
+  const [recentDiaries, setRecentDiaries] = useState<{ color: string }[]>([]);
   const fetchLatestDiary = async () => {
     try {
       const res = await fetch("/api/diary/latest");
@@ -45,17 +49,37 @@ export default function HomePage() {
       const data = await res.json();
       if (res.ok) {
         setQuotes(data.quotes);
-        setQuoteIndex(0); // 처음 인덱스부터
+        setQuoteIndex(0);
       }
     } catch (err) {
       console.error("명언 불러오기 실패", err);
     }
   };
 
+  const fetchRecentDiaries = async () => {
+    try {
+      const res = await fetch("/api/diary/recent");
+      const data = await res.json();
+      if (res.ok) {
+        const formatted = data.diaries.map((d: Diary) => ({
+          color: d.moodColor,
+        }));
+        setRecentDiaries(formatted);
+      }
+    } catch (err) {
+      console.error("최근 일기 불러오기 실패", err);
+    }
+  };
+
   useEffect(() => {
     fetchQuotes();
     fetchLatestDiary();
+    fetchRecentDiaries();
   }, []);
+
+  useEffect(() => {
+    console.log("🔍 recentDiaries", recentDiaries);
+  }, [recentDiaries]);
 
   const nextQuote = () => {
     setQuoteIndex((prev) => (prev + 1) % quotes.length);
@@ -110,21 +134,28 @@ export default function HomePage() {
         </HomeBox>
 
         {/* 감정 요약 */}
-        <HomeBox title="감정 요약 (최근 7일)">
-          <div className="text-sm flex gap-3">
-            <span>😁 3회</span>
-            <span>😐 2회</span>
-            <span>🥲 1회</span>
-          </div>
-        </HomeBox>
+
+        {recentDiaries.length > 0 && (
+          <HomeEmotionSummary entries={recentDiaries} />
+        )}
 
         {/* 최근 일기 */}
         <HomeBox title="최근 일기">
           <div className="text-sm text-gray-600">
-            비 오는 날, 우산을 깜빡했다 …{" "}
-            <span className="underline text-[#ce9090] cursor-pointer">
-              [더보기]
-            </span>
+            {latestDiary ? (
+              <div className="flex justify-between">
+                <span className="font-semibold">{latestDiary?.title}</span>
+                <span
+                  className="underline text-[#ce9090] cursor-pointer hover:text-[#d07f7f] hover:font-semibold transition-all"
+                  onClick={() => {
+                    window.location.href = `/diary/${latestDiary?.id}`;
+                  }}>
+                  [더보기]
+                </span>
+              </div>
+            ) : (
+              <span>일기가 없습니다.</span>
+            )}
           </div>
         </HomeBox>
       </div>
