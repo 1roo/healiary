@@ -48,6 +48,9 @@ model FavoriteQuote {
   quoteId   Int
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id])
-  quote     Quote    @relation(fields: [quoteId], references: [id])
+  user   User  @relation(fields: [userId], references: [id])
+  quote  Quote @relation(fields: [quoteId], references: [id])
+
+  @@unique([userId, quoteId], name: "userId_quoteId") 
 }
+

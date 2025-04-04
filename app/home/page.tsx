@@ -14,38 +14,51 @@ type Quote = {
 
 export default function HomePage() {
   const { data: session } = useSession();
-  const [quote, setQuote] = useState<Quote | null>(null);
+  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [quoteIndex, setQuoteIndex] = useState(0);
+
+  const fetchQuotes = async () => {
+    try {
+      const res = await fetch("/api/quote/recommend");
+      const data = await res.json();
+      if (res.ok) {
+        setQuotes(data.quotes);
+        setQuoteIndex(0); // 처음 인덱스부터
+      }
+    } catch (err) {
+      console.error("명언 불러오기 실패", err);
+    }
+  };
 
   useEffect(() => {
-    const fetchQuote = async () => {
-      try {
-        const res = await fetch("/api/quote/recommend");
-        const data = await res.json();
-        if (res.ok) {
-          setQuote(data.quote);
-        }
-      } catch (err) {
-        console.error("명언 불러오기 실패", err);
-      }
-    };
-
-    fetchQuote();
+    fetchQuotes();
   }, []);
 
+  const nextQuote = () => {
+    setQuoteIndex((prev) => (prev + 1) % quotes.length);
+  };
+
+  const currentQuote = quotes[quoteIndex];
+
   return (
-    <div className="mt-10 flex flex-col items-center w-full">
+    <div className="mt-4 flex flex-col items-center w-full">
       <Image src="/healiary.png" alt="로고" width={100} height={100} />
-      <p className="my-4 text-sm text-gray-600">
-        <span className="font-semibold"></span>
+      <p className="text-sm text-gray-600">
         {session?.user.nickname}님, 오늘도 내일도 항상 응원합니다.
       </p>
 
       <div className="w-full">
         {/* 오늘의 한 마디 */}
-        <HomeBox title="오늘의 한 마디">
+        <HomeBox
+          title="오늘의 한 마디"
+          onArrowClick={nextQuote}
+          rightElement={
+            currentQuote && <HeartButton quoteId={currentQuote.id} />
+          }>
           <div className="flex items-center justify-between">
-            <p className="text-[13px]">{quote?.content ?? "명언을 불러오는 중..."}</p>
-            {quote && <HeartButton quoteId={quote.id} />}
+            <p className="text-[13px] transition-opacity duration-300 ease-in-out">
+              {currentQuote?.content ?? "명언을 불러오는 중..."}
+            </p>
           </div>
         </HomeBox>
 
