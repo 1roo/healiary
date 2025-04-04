@@ -1,5 +1,3 @@
-// utils/generateMoodDescription.ts
-
 export function getHueColorName(hue: number): string {
   if (hue < 20) return "붉은색";
   if (hue < 60) return "주황색";
@@ -26,6 +24,16 @@ export function getToneDescription(
   return tone;
 }
 
+function getSubjectParticle(word: string): string {
+  const lastChar = word[word.length - 1];
+  const code = lastChar.charCodeAt(0);
+  const isHangul = code >= 0xac00 && code <= 0xd7a3;
+  if (!isHangul) return "가";
+
+  const hasFinalConsonant = (code - 0xac00) % 28 !== 0;
+  return hasFinalConsonant ? "이" : "가";
+}
+
 export function generateMoodDescription({
   hue,
   saturation,
@@ -39,6 +47,7 @@ export function generateMoodDescription({
 }): string {
   const color = getHueColorName(hue);
   const tone = getToneDescription(saturation, lightness);
+  const particle = getSubjectParticle(interpretedMood);
 
-  return `${tone}${color} 빛이 감도는, ${interpretedMood}이 묻어나는 하루였어요.`;
+  return `${tone}${color} 빛이 감도는, ${interpretedMood}${particle} 묻어나는 하루였어요.`;
 }

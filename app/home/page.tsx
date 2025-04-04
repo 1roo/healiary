@@ -75,8 +75,8 @@ export default function HomePage() {
         <HomeBox
           title="오늘의 한 마디"
           onArrowClick={nextQuote}
-          rightElement={<HeartButton quoteId={currentQuote.id} />}>
-          <p>{currentQuote.content}</p>
+          rightElement={<HeartButton quoteId={currentQuote?.id} />}>
+          <p>{currentQuote?.content}</p>
         </HomeBox>
 
         {/* 마지막 감정 색상 */}
