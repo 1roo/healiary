@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Input from "@/components/input";
 import Button from "@/components/button";
 import { useSession } from "next-auth/react";
@@ -13,6 +13,25 @@ export default function DiaryWritePage() {
   const [content, setContent] = useState("");
   const [showModal, setShowModal] = useState(false);
   const maxLength = 800;
+
+  const hasChecked = useRef(false);
+
+  useEffect(() => {
+    if (hasChecked.current) return;
+    hasChecked.current = true;
+
+    const checkTodayDiary = async () => {
+      const res = await fetch("/api/diary/today");
+      const data = await res.json();
+
+      if (data?.diary) {
+        alert("이미 오늘 일기를 작성하셨어요!");
+        router.push(`/diary/${data.diary.id}`);
+      }
+    };
+
+    checkTodayDiary();
+  }, []);
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length <= maxLength) {

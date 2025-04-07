@@ -8,6 +8,7 @@ import {
   getToneDescription,
 } from "@/utils/generateMoodDescription";
 import { ChevronLeft } from "lucide-react";
+import { formatKoreanDate } from "@/utils/formatKoreanDate";
 
 const DiaryPage = () => {
   const { id } = useParams();
