@@ -9,23 +9,6 @@ import {
 } from "@/utils/generateMoodDescription";
 import { ChevronLeft } from "lucide-react";
 
-const formatKoreanDate = (isoDate: Date) => {
-  const date = new Date(isoDate);
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-
-  const days = ["일", "월", "화", "수", "목", "금", "토"];
-  const weekday = days[date.getDay()];
-
-  let hours = date.getHours();
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-  const ampm = hours >= 12 ? "PM" : "AM";
-  hours = hours % 12 || 12;
-
-  return `${year}년 ${month}월 ${day}일 (${weekday}) ${hours}:${minutes}${ampm}`;
-};
-
 const DiaryPage = () => {
   const { id } = useParams();
   const router = useRouter();
@@ -58,7 +41,7 @@ const DiaryPage = () => {
       <ChevronLeft
         size={25}
         strokeWidth={1.5}
-        onClick={() => router.push("/home")}
+        onClick={() => router.back()}
         className="mt-5 ml-3 text-gray-400 cursor-pointer transition-transform duration-150 hover:text-gray-600 hover:scale-110"
       />
 

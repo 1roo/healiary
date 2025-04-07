@@ -17,7 +17,11 @@ export default function Navbar() {
   return (
     <nav className="w-full h-16 border-t border-gray-200 bg-white flex justify-around items-center z-1">
       {navItems.map(({ href, label, icon: Icon }) => {
-        const isActive = pathname === href;
+        const isActive =
+          (href === "/mypage" &&
+            pathname.startsWith("/diary") &&
+            pathname !== "/diary/write") ||
+          pathname === href;
 
         return (
           <Link

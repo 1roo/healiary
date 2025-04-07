@@ -20,10 +20,8 @@ export default function HomeBox({
     <div
       className={`w-full my-2 bg-white opacity-80 px-6 py-3 rounded-xl ${className}`}>
       {customHeader ? (
-        // ✅ 완전 커스터마이징된 헤더 우선
         <div className="mb-2">{customHeader}</div>
       ) : (
-        // ✅ 일반 헤더 (title + right)
         <div className="flex justify-between items-center mb-2 text-sm font-semibold">
           <div>{title}</div>
           <div className="flex items-center gap-2">
