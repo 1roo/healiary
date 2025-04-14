@@ -8,7 +8,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
@@ -18,12 +17,18 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" | base64 -d > key.pem
           chmod 600 key.pem
 
-      - name: Deploy to EC2
+      - name: Pull latest code
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@3.39.237.73 << 'EOF'
-            cd ~/your-project-folder
-            git pull origin main
-            npm install
-            npm run build
-            pm2 reload healiary || pm2 start npm --name healiary -- start
-          EOF
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@3.39.237.73 "cd ~/healiary && git pull origin main"
+
+      - name: Install dependencies
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@3.39.237.73 "cd ~/healiary && npm install"
+
+      - name: Build project
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@3.39.237.73 "cd ~/healiary && npm run build"
+
+      - name: Restart with PM2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@3.39.237.73 "pm2 reload healiary || pm2 start npm --name healiary -- start"
