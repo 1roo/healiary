@@ -21,9 +21,9 @@ jobs:
       - name: Deploy to EC2
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@3.39.237.73 << 'EOF'
-            cd ~/healiary
+            cd ~/your-project-folder
             git pull origin main
             npm install
             npm run build
-            pm2 reload healiary
+            pm2 reload healiary || pm2 start npm --name healiary -- start
           EOF
